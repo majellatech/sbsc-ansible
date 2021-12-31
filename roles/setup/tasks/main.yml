@@ -1,0 +1,84 @@
+---
+- name: Set authorized key taken from file
+  ansible.posix.authorized_key:
+    user: pi
+    state: present
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: Set keyboard layout
+  ansible.builtin.copy:
+    src: files/keyboard
+    dest: /etc/default/keyboard
+
+- name: Set clock to CEST
+  community.general.timezone:
+    name: Europe/Amsterdam
+
+- name: Disable Bluetooth and Wifi
+  ansible.builtin.blockinfile:
+    path: /boot/config.txt
+    insertbefore: BOF
+    block: |
+      dtoverlay=disable-wifi
+      dtoverlay=disable-bt
+
+- name: Remove piwiz
+  ansible.builtin.apt:
+    name: piwiz
+    state: absent
+
+- name: Update packages
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Copy YouTube sync checker script (sbsc)
+  become: yes
+  become_user: pi
+  git:
+    repo: https://github.com/majellatech/sbsc.git
+    dest: /home/pi/sbsc
+    clone: yes
+    update: yes
+
+- name: Install sbsc dependencies
+  ansible.builtin.pip:
+    name: PySimpleGUI
+
+- name: Add XDG autostart unit to start sbsc at boot
+  ansible.builtin.copy:
+    src: files/sbsc.desktop
+    dest: /etc/xdg/autostart/
+
+- name: Copy nice wallpaper
+  become: yes
+  become_user: pi
+  ansible.builtin.copy:
+    src: files/background.jpg
+    dest: /home/pi/Pictures/
+
+- name: Create pcmanfm config directory
+  become: yes
+  become_user: pi
+  file:
+    path: /home/pi/.config/pcmanfm/LXDE-pi/
+    state: directory
+
+- name: Set nice wallpaper
+  become: yes
+  become_user: pi
+  ansible.builtin.copy:
+    src: files/desktop-items-0.conf
+    dest: /home/pi/.config/pcmanfm/LXDE-pi/
+
+- name: Disable SSH password authentication
+  replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^#PasswordAuthentication yes$'
+    replace: 'PasswordAuthentication no'
+
+- name: Disable SSH X11Forwarding
+  replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^X11Forwarding yes$'
+    replace: 'X11Forwarding no'

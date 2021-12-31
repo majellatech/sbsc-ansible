@@ -1,0 +1,6 @@
+---
+- name: Set up the RaspberryPi
+  become: true
+  hosts: rpi
+  roles:
+    - role: setup

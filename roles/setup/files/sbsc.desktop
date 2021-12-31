@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/python /home/pi/sbsc/sbsc.py
+Name=sbsc
+Comment=Startup sbsc on load
