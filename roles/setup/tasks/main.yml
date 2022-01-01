@@ -22,6 +22,19 @@
       dtoverlay=disable-wifi
       dtoverlay=disable-bt
 
+- name: Get PID of sshpwd.sh process
+  command: pgrep -f sshpwd
+  register: pgrep_output
+  ignore_errors: yes
+
+- name: Close sshpwd.sh
+  command: pkill -P {{ pgrep_output.stdout }}
+  ignore_errors: yes
+
+- name: Close piwiz
+  ansible.builtin.command: pkill piwiz
+  ignore_errors: yes
+
 - name: Remove piwiz
   ansible.builtin.apt:
     name: piwiz
