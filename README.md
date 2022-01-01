@@ -1,6 +1,6 @@
 # sbsc-ansible
 
-An Ansible script for provisioning a RaspberryPi to run [sbsc](https://github.com/majellatech/sbsc) on boot (and set a wallpaper).
+An Ansible script for provisioning a RaspberryPi to run [sbsc](https://github.com/majellatech/sbsc) on boot.
 
 ## Instructions
 

@@ -50,27 +50,6 @@
     src: files/sbsc.desktop
     dest: /etc/xdg/autostart/
 
-- name: Copy nice wallpaper
-  become: yes
-  become_user: pi
-  ansible.builtin.copy:
-    src: files/background.jpg
-    dest: /home/pi/Pictures/
-
-- name: Create pcmanfm config directory
-  become: yes
-  become_user: pi
-  file:
-    path: /home/pi/.config/pcmanfm/LXDE-pi/
-    state: directory
-
-- name: Set nice wallpaper
-  become: yes
-  become_user: pi
-  ansible.builtin.copy:
-    src: files/desktop-items-0.conf
-    dest: /home/pi/.config/pcmanfm/LXDE-pi/
-
 - name: Disable SSH password authentication
   replace:
     path: /etc/ssh/sshd_config
